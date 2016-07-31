@@ -1,0 +1,13 @@
+{
+    "name": "sapphirecat/lisp-signals",
+    "description": "Lisp-style signals, conditions, and restarts",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "Sapphirecat\\Signal\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^5.6 || ^7.0"
+    }
+}

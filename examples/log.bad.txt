@@ -1,0 +1,13 @@
+1470000000.528 info Engine 3 online.
+1470000000.827 info Engine 0 online.
+1470000000.576 info Engine 1 standby.
+1470000000.948 info Engine 2 standby.
+1470000000.950 notice
+1470000008.313
+warning Vehicle instability detected, switching engines.
+1470001253.733 info Engine 1 online.
+1470001257.001 info Engine 2 online.
+1470001270.226 vasb Ratvar 0 fgnaqol.
+1470001272.498 vasb Ratvar 3 fgnaqol.
+1470001272.741 abgvpr Ratvar fjvgpu pbzcyrgrq fhpprffshyyl.
+1470001302.947 notice Vehicle stability OK.
