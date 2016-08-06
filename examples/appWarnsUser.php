@@ -15,8 +15,10 @@ function app_handle ($restarts, $signal, $args)
         return; // don't do anything about non-errors
     }
 
+    // unpack the error info and issue the warning
     list($message, $data) = $args;
     Signal::warning("Ignoring an error: $message");
 
+    // then continue without processing this line.
     $restarts->call('SkipEntry');
 }

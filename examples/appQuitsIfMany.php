@@ -11,6 +11,8 @@ foreach (collect_filenames($argv) as $filename) {
 
 function app_handle ($restarts, $signal, $args)
 {
+    // use static variables, to remember state between calls.
+    // (sort of like a mini class; I'm too lazy to make a real one.)
     static $failures;
     static $skip;
 
