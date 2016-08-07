@@ -134,33 +134,55 @@ class Signal
      * same happens if no handlers are active.
      *
      * @param string $signal Signal sent.
-     * @param array $args Arguments to pass to the signal handler code.
      * @return void
+     * @see Router::invoke()
      */
-    public static function send($signal, array $args=null)
+    public static function send(SignalInterface $signal)
     {
         if (! self::$router) {
             return; // nothing ever registered, for sure
         }
 
         $r = self::$router;
-        $r->invoke($signal, $args, self::$restarts);
+        $r->invoke(self::$restarts, $signal);
     }
 
-    /** Send an error signal.
+    /** Send an error signal object.
      *
-     * This function will not return.  If the error is not handled (and a
-     * restart called), then PHP's exit function is called.
+     * This method allows applications to generate their own non-Error errors,
+     * but use the standard "uncaught error protocol" (log and exit; this
+     * method) to send them.
+     *
+     * This method will not return.  If the error is not handled (and a restart
+     * called), then PHP's exit function is called.
+     *
+     * @param Error $error Error being raised.
+     */
+    public static function sendError (Error $error)
+    {
+        self::send($error);
+        try {
+            $error->doUnhandled();
+        } finally {
+            exit(1); // emergency fallback, if doUnhandled is broken
+        }
+    }
+
+    /** Create and send an error signal.
+     *
+     * This method is a convenience wrapper for calling sendError() with an
+     * instance of the built-in, basic Error class.
+     *
+     * This method will not return.  If the error is not handled (and a restart
+     * called), then PHP's exit function is called.
      *
      * @param string $message Error message.
      * @param array $data Auxiliary data to pass to signal handlers.
+     * @see Error
+     * @see sendError()
      */
     public static function error ($message, array $data=null) {
-        self::send('error', [$message, $data]);
-
-        // Unhandled error!  Log and quit immediately.
-        error_log("Error: $message");
-        exit(1);
+        self::sendError(new Error($message, $data));
     }
 
     /** Send a warning signal.
@@ -174,7 +196,7 @@ class Signal
     public static function warning ($message) {
         try {
             $guard = self::restart(__NAMESPACE__.'\\Silence');
-            self::send('warning', [$message]);
+            self::send(new Warning($message));
 
             error_log($message);
         } catch (Silence $e) {

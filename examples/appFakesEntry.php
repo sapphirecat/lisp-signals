@@ -9,9 +9,8 @@ foreach (collect_filenames($argv) as $filename) {
 }
 
 
-function app_handle ($restarts, $signal, $args)
+function app_handle ($restarts, $signal)
 {
-    list($message, $data) = $args;
-    $data['*error'] = $message; // store a "corrupt entry" message
+    $data['*error'] = $signal->getMessage(); // store a "corrupt entry" message
     $restarts->call('UseValue', [ 'value' => $data ]);
 }

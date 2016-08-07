@@ -30,13 +30,15 @@ class Router
      *
      * @param callable $handler Signal dispatching fuction to be invoked when a
      * signal is sent.
+     * @param array[string] $signals Signal class names to which this
+     * dispatching function applies.  Only these classes, when thrown, will
+     * invoke this handler.
      * @return ScopeGuard Value that removes the signal handler when destroyed.
      */
     public function add(callable $handler, array $signals=null)
     {
         $id = ++$this->seq . $this->tag;
-        $signalSet = isset($signals) ? array_flip($signals) : null;
-        $this->stack[$id] = [$handler, $signalSet];
+        $this->stack[$id] = [$handler, $signals];
         return new CallScopeGuard([$this, 'remove'], [$id]);
     }
 
@@ -55,25 +57,43 @@ class Router
         unset($this->stack[$id]);
     }
 
+    /** Check a signal for a match.
+     *
+     * Used when a list of signal class names is provided to add().
+     *
+     * @param SignalInterface $signal Signal object being checked.
+     * @param array[string] $classes List of permitted signal class names.
+     * @return boolean TRUE when the signal matches a signal in the list, FALSE
+     * otherwise.
+     */
+    protected function matchesSignal(SignalInterface $signal, $classes) {
+        foreach ($classes as $class) {
+            if ($signal instanceof $class) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /** Send a signal to the handlers.
      *
      * Returns if all handlers decline to handle the signal.
      *
-     * @param string $signal Signal being sent.
-     * @param array $args Arguments to pass to the signal handler.
      * @param Restarts $restarts Active restarts that may be invoked by a signal
      * handler.
+     * @param SignalInterface $signal Signal being sent.
      * @return void
      * @throws RestartInterface to transfer control when a restart is invoked by
      * a handler.  This exception SHOULD NOT be caught except by code that
      * defined the restart.
      */
-    public function invoke($signal, array $args, Restarts $restarts)
+    public function invoke(Restarts $restarts, SignalInterface $signal)
     {
         foreach (array_reverse(array_values($this->stack)) as $handlerInfo) {
             list($handler, $signals) = $handlerInfo;
-            if ($signals === null || isset($signals[$signal])) {
-                call_user_func($handler, $restarts, $signal, $args);
+            if ($signals === null || $this->matchesSignal($signal, $signals)) {
+                call_user_func($handler, $restarts, $signal);
             }
         }
     }

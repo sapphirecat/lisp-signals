@@ -9,7 +9,7 @@ foreach (collect_filenames($argv) as $filename) {
 }
 
 
-function app_handle ($restarts, $signal, $args)
+function app_handle ($restarts, $signal)
 {
     // This app doesn't care at all about errors, so all it needs to do is
     // continue without using that particular log entry.
