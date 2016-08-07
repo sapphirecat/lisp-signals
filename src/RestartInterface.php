@@ -8,6 +8,7 @@ namespace Sapphirecat\Signal;
  * for implementing the restart exceptions independently of the BaseRestart
  * class provided in this package.
  */
-interface RestartInterface {
+interface RestartInterface
+{
     public function getArgs();
 }
