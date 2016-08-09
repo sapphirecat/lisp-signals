@@ -1,7 +1,17 @@
 {
     "name": "sapphirecat/lisp-signals",
+    "type": "library",
     "description": "Lisp-style signals, conditions, and restarts",
+    "homepage": "https://github.com/sapphirecat/lisp-signals",
     "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Sapphire Cat",
+            "email": "devel@sapphirepaw.org",
+            "homepage": "https://www.saaphirepaw.org/",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Sapphirecat\\Signal\\": "src/"
