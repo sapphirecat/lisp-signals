@@ -41,7 +41,7 @@ sent with `Signal::send()`, and active restarts are declared by
 actually invoked by throwing a `BaseRestart`.
 
 The error and warning protocols are implemented in `Signal::error()` and
-`Signal::warning` (with a `Silence` restart), respectively.  Finally, the
+`Signal::warning()` (with a `Silence` restart), respectively.  Finally, the
 built-in `Error` condition can be subclassed, and sent with
 `Signal::sendError()`.
 
